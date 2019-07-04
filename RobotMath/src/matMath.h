@@ -32,7 +32,7 @@ namespace RobotMath {
 	class DCM :public Matrix {
 	public:
 		DCM(double* n, double theta, double* trans_vec);
-		DCM(Matrix matA);
+		DCM(Matrix& matA);
 		~DCM();
 		//DCM matrixAdd(DCM dcmMatA, DCM dcmMatB);
 		//DCM matrixSub(DCM dcmMatA, DCM dcmMatB);

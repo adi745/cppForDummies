@@ -180,10 +180,7 @@ DCM::DCM(double* n, double theta, double* trans_vec) :
 		}
 	}
 }
-DCM::DCM(Matrix matA):Matrix(4, 4){
-	this->matrixA = matA.matrixA;
-}
-
+DCM::DCM(Matrix& matA): Matrix(4, 4){}
 
 DCM::~DCM() {
 	Mat::freeMemory(DCM::matrixA);
