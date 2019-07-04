@@ -7,6 +7,7 @@
 //============================================================================
 
 #include "matMath.h"
+#include <typeinfo>
 using namespace RobotMath;
 
 int main() {
@@ -14,10 +15,15 @@ int main() {
 	double n[] = { 0.0, 0.0, 1.0 };
 	double trans[] = { 1.0, 0.0, 0.0 };
 	DCM aMat = DCM(n, 0, trans);
-	trans[0] = 1.5; trans[1] = 1.5;
+	trans[0] = 1.5;
+	trans[1] = 1.5;
 	DCM bMat = DCM(n, 0, trans);
-	bMat.matrixA[0][1] = 2; bMat.matrixA[0][2] = 3; bMat.matrixA[0][3] = 4;
-	bMat.matrixA[1][0] = 2; bMat.matrixA[1][2] = 3; bMat.matrixA[1][3] = 4;
+	bMat.matrixA[0][1] = 2;
+	bMat.matrixA[0][2] = 3;
+	bMat.matrixA[0][3] = 4;
+	bMat.matrixA[1][0] = 2;
+	bMat.matrixA[1][2] = 3;
+	bMat.matrixA[1][3] = 4;
 	for (unsigned int r = 0; r < aMat.rows; r++) {
 		for (unsigned int c = 0; c < aMat.cols; c++) {
 			cout << aMat.matrixA[r][c] << ", " << flush;
@@ -36,7 +42,11 @@ int main() {
 
 	Matrix cMat = Mat::matrixMul(aMat, bMat);
 
-	DCM& dMat = static_cast<DCM&>(cMat);
+	/*	DCM& dMat = static_cast<DCM&>(cMat);*/
+	DCM dMat = DCM(cMat);
+
+	string s = typeid(dMat).name();
+	cout << s << endl;
 
 	for (unsigned int r = 0; r < dMat.rows; r++) {
 		for (unsigned int c = 0; c < dMat.cols; c++) {
