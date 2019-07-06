@@ -14,7 +14,8 @@ int main() {
 
 	double n[] = { 0.0, 0.0, 1.0 };
 	double trans[] = { 1.0, 0.0, 0.0 };
-	DCM aMat = DCM(n, 0, trans);
+	cout << M_PI <<endl;
+	DCM aMat = DCM(n, 45, trans);
 	trans[0] = 1.5;
 	trans[1] = 1.5;
 	DCM bMat = DCM(n, 0, trans);

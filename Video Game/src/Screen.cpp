@@ -58,10 +58,10 @@ bool Screen::init() {
 	memset(m_buffer, 0, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(Uint32));
 	/*memset does the same thing like a for loop for all pixels*/
 
-	m_buffer[30000] = 0xFFFFFFFF; //setting an Uint32 to FF
+	/*m_buffer[30000] = 0xFFFFFFFF; //setting an Uint32 to FF
 	for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++) {
 		m_buffer[i] = 0xFFFF0000;
-	}
+	}*/
 	/*SDL_UpdateTexture(m_texture, NULL, buffer, SCREEN_WIDTH * sizeof(Uint32));
 	 SDL_RenderClear(m_renderer);
 	 SDL_RenderCopy(m_renderer, m_texture, NULL, NULL);
@@ -72,6 +72,9 @@ bool Screen::init() {
 void Screen::setPixel(int x, int y, Uint8 red, Uint8 green, Uint8 blue) {
 	Uint32 color = 0;
 
+	if(x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT){
+		return;
+	}
 	color += red;
 	color <<= 8; //move all the values of the color by 8 bits
 	color += green;
@@ -88,6 +91,11 @@ void Screen::update() {
 	SDL_RenderClear(m_renderer);
 	SDL_RenderCopy(m_renderer, m_texture, NULL, NULL);
 	SDL_RenderPresent(m_renderer);
+}
+
+void Screen::clear(){
+	memset(m_buffer, 0, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(Uint32));
+	/*clearing the buffer using null array the size of the screen*/
 }
 
 bool Screen::processEvents() {

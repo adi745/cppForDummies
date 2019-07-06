@@ -119,6 +119,9 @@ Matrix Mat::matrixMul(Matrix matA, Matrix matB) {
 				for (unsigned i = 0; i < matA.cols; i++) {
 					res.matrixA[r][c] += matA.matrixA[r][i]
 							* matB.matrixA[i][c];
+					if(abs(res.matrixA[r][c])<THRESHOLD){
+						res.matrixA[r][c] = 0.0;
+					}
 				}
 			}
 		}
@@ -152,8 +155,8 @@ void Mat::freeMemory(double **pMat) {
 #pragma region DCM
 DCM::DCM(double* n, double theta, double* trans_vec) :
 		Matrix(4, 4) {
-	double sT = sin(theta * PI / 180);
-	double cT = cos(theta * PI / 180);
+	double sT = sin(theta * M_PI / 180);
+	double cT = cos(theta * M_PI / 180);
 	double vT = 1.0 - cT;
 
 	this->matrixA[0][0] = n[0] * n[0] * vT + cT;
@@ -180,7 +183,9 @@ DCM::DCM(double* n, double theta, double* trans_vec) :
 		}
 	}
 }
-DCM::DCM(Matrix& matA): Matrix(4, 4){}
+DCM::DCM(Matrix& matA) :
+		Matrix(4, 4) {
+}
 
 DCM::~DCM() {
 	Mat::freeMemory(DCM::matrixA);

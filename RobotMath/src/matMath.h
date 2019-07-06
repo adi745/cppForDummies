@@ -10,22 +10,21 @@
 
 #include <iostream>
 #include <math.h>
-#define PI 3.141592
 
 using namespace std;
 
 namespace RobotMath {
 
+	const double THRESHOLD = 0.001;
+
 	class Matrix {
-	protected:
-		const double THRESHOLD = 0.001;
 	public:
 		double **matrixA;
 		unsigned int rows, cols;
 
 		//	~Matrix();
 		Matrix(unsigned int rows, unsigned int cols);
-		virtual Matrix transpose();
+		Matrix transpose();
 		double determinant(int n);
 	};
 
