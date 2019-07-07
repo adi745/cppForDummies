@@ -14,11 +14,12 @@ namespace sdlGraphics {
 class Swarm {
 private:
 	Particle *m_pParticles;
+	int lastTime;
 public:
 	const static int NPARTICLES = 5000;
 	Swarm();
 	virtual ~Swarm();
-	void update();
+	void update(int elapsed);
 	const Particle * const getParticles(){return m_pParticles;};
 };
 

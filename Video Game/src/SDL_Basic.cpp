@@ -33,7 +33,7 @@ int main() {
 		const int explosionHPos = Screen::SCREEN_WIDTH / 2;
 		int elapsed = SDL_GetTicks();
 
-		swarm.update();
+		swarm.update(elapsed);
 
 		unsigned char red = (unsigned char) ((1 + sin(elapsed * 0.0001)) * 128); //we multiply by 0.001 to smooth the changes
 		unsigned char green =(unsigned char) ((1 + sin(elapsed * 0.0002)) * 128); //we multiply by 0.002 to smooth the changes

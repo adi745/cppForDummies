@@ -25,6 +25,7 @@ namespace RobotMath {
 		//	~Matrix();
 		Matrix(unsigned int rows, unsigned int cols);
 		Matrix transpose();
+/*		Matrix adjoint();*/
 		double determinant(int n);
 	};
 

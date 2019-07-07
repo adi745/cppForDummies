@@ -32,6 +32,22 @@ Matrix Matrix::transpose() {
 	return matB;
 }
 
+/*Matrix Matrix::adjoint() {
+	Matrix res = Matrix(this->rows, this->cols);
+	Matrix coeff = Matrix(this->rows-1, this->cols-1); // i need to put the terms inside of that function and compute det of it
+	for (unsigned int r = this->rows; r > 0; r--) {
+		for (unsigned int c = this->cols; c > 0; c--) {
+			if ((r + c) % 2 == 0) {
+				res.matrixA[r][c] = this->matrixA[r][c]*this->determinant();
+			} else {
+				res.matrixA[r][c] = -this->matrixA[r][c];
+			}
+		}
+	}
+	res = res.transpose();
+	return res;
+}*/
+
 double Matrix::determinant(int n) {
 	/*must be a square matrix*/
 	double det = 0.0;
@@ -119,7 +135,7 @@ Matrix Mat::matrixMul(Matrix matA, Matrix matB) {
 				for (unsigned i = 0; i < matA.cols; i++) {
 					res.matrixA[r][c] += matA.matrixA[r][i]
 							* matB.matrixA[i][c];
-					if(abs(res.matrixA[r][c])<THRESHOLD){
+					if (abs(res.matrixA[r][c]) < THRESHOLD) {
 						res.matrixA[r][c] = 0.0;
 					}
 				}

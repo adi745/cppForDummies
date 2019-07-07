@@ -14,7 +14,7 @@ int main() {
 
 	double n[] = { 0.0, 0.0, 1.0 };
 	double trans[] = { 1.0, 0.0, 0.0 };
-	cout << M_PI <<endl;
+/*	cout << M_PI <<endl;*/
 	DCM aMat = DCM(n, 45, trans);
 	trans[0] = 1.5;
 	trans[1] = 1.5;
@@ -68,14 +68,14 @@ int main() {
 		cout << endl;
 	}
 	cout << endl;
-	Matrix eMat = bMat.transpose();
+	/*Matrix eMat = bMat.adjoint();
 	for (unsigned int r = 0; r < eMat.rows; r++) {
 		for (unsigned int c = 0; c < eMat.cols; c++) {
 			cout << eMat.matrixA[r][c] << ", " << flush;
 		}
 		cout << endl;
 	}
-	cout << endl;
+	cout << endl;*/
 
 	double detbMat = bMat.determinant(bMat.rows);
 	cout << detbMat << endl;
