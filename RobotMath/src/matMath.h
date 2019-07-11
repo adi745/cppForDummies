@@ -25,9 +25,10 @@ namespace RobotMath {
 		//	~Matrix();
 		Matrix(unsigned int rows, unsigned int cols);
 		Matrix transpose();
-		Matrix adjoint();
-		double determinant(unsigned int n);
 		Matrix getCofactor(unsigned int p, unsigned int q, unsigned int n);
+		Matrix adjoint(unsigned int n);
+		Matrix inverse(unsigned int n);
+		double determinant(unsigned int n);
 	};
 
 	class DCM :public Matrix {

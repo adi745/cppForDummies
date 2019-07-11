@@ -32,31 +32,40 @@ Matrix Matrix::transpose() {
 	return matB;
 }
 
-/*
-Matrix Matrix::adjoint() {
+// Function to get adjoint of A[N][N] in adj[N][N].
+Matrix Matrix::adjoint(unsigned int n) {
 	Matrix res = Matrix(this->rows, this->cols);
-	Matrix coeff = Matrix(this->rows-1, this->cols-1); // i need to put the terms inside of that function and compute det of it
-	double det;
-	for (unsigned int r = 0; r < this->rows; r++) {
-		for (unsigned int c = 0; c < this->cols; c++) {
-			for (unsigned int )
-			if ((r + c) % 2 == 0) {
-				res.matrixA[r][c] = this->matrixA[r][c]*
-			} else {
-				res.matrixA[r][c] = -this->matrixA[r][c];
+	if (n == 1) {
+		res.matrixA[0][0] = 1;
+	} else {
+		// temp is used to store cofactors of A[][]
+		int sign = 1;
+		Matrix temp = Matrix(n, n);
+
+		for (unsigned int i = 0; i < n; i++) {
+			for (unsigned int j = 0; j < n; j++) {
+				// Get cofactor of A[i][j]
+				temp = this->getCofactor(i, j, n);
+
+				// sign of adj[j][i] positive if sum of row
+				// and column indexes is even.
+				sign = ((i + j) % 2 == 0) ? 1 : -1;
+
+				// Interchanging rows and columns to get the
+				// transpose of the cofactor matrix
+				res.matrixA[j][i] = (sign) * (temp.determinant(n - 1));
 			}
 		}
+
 	}
-	res = res.transpose();
 	return res;
 }
-*/
 
 // Function to get cofactor of A[p][q] in temp[][]. n is current
 // dimension of A[][]
 Matrix Matrix::getCofactor(unsigned int p, unsigned int q, unsigned int n)
 {
-    int i = 0, j = 0;
+    unsigned int i = 0, j = 0;
 	Matrix res = Matrix(n, n);
     // Looping for each element of the matrix
     for (unsigned int row = 0; row < n; row++)
@@ -129,7 +138,7 @@ double Matrix::determinant(unsigned int n)
     int sign = 1;  // To store sign multiplier
 
      // Iterate for each element of first row
-    for (int f = 0; f < n; f++)
+    for (unsigned int f = 0; f < n; f++)
     {
         // Getting Cofactor of A[0][f]
     	temp = this->getCofactor(0, f, n);
@@ -142,6 +151,27 @@ double Matrix::determinant(unsigned int n)
     return D;
 }
 
+// Function to calculate and store inverse, returns false if
+// matrix is singular
+Matrix Matrix::inverse(unsigned int n) //int A[N][N], float inverse[N][N]
+{
+	Matrix res = Matrix(n, n);
+	// Find determinant of A[][]
+	double det = this->determinant(n);
+	if (det == 0) {
+		cout << "Singular matrix, can't find its inverse";
+	} else {
+		// Find adjoint
+		Matrix adj = this->adjoint(n);
+
+		// Find Inverse using formula "inverse(A) = adj(A)/det(A)"
+		for (unsigned int i = 0; i < n; i++)
+			for (unsigned int j = 0; j < n; j++)
+				res.matrixA[i][j] = adj.matrixA[i][j] / det;
+
+	}
+	return res;
+}
 #pragma endregion
 
 #pragma region Math Operations
@@ -209,24 +239,10 @@ Matrix Mat::matrixMul(Matrix matA, Matrix matB) {
 	}
 }
 
-//Matrix Mat::matrixInv(Matrix matA, unsigned int size) {
-//	/*size is limited to 2-4*/
-//	switch (size)
-//	{
-//	case 2:
-
-//	case 3:
-//	case 4:
-
-//	default:
-//		break;
-//	}
-//}
 void Mat::freeMemory(double **pMat) {
 	//	cout << "Memory deallocated" << endl;
 	delete[] *pMat;
 }
-
 #pragma endregion
 
 #pragma region DCM
@@ -267,7 +283,6 @@ DCM::DCM(Matrix& matA) :
 DCM::~DCM() {
 	Mat::freeMemory(DCM::matrixA);
 }
-
 #pragma endregion
 
 }
