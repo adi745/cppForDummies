@@ -25,8 +25,9 @@ namespace RobotMath {
 		//	~Matrix();
 		Matrix(unsigned int rows, unsigned int cols);
 		Matrix transpose();
-/*		Matrix adjoint();*/
-		double determinant(int n);
+		Matrix adjoint();
+		double determinant(unsigned int n);
+		Matrix getCofactor(unsigned int p, unsigned int q, unsigned int n);
 	};
 
 	class DCM :public Matrix {

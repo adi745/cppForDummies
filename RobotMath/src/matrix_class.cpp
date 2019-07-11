@@ -68,14 +68,14 @@ int main() {
 		cout << endl;
 	}
 	cout << endl;
-	/*Matrix eMat = bMat.adjoint();
+	Matrix eMat = bMat.getCofactor(0, 0, 4);
 	for (unsigned int r = 0; r < eMat.rows; r++) {
 		for (unsigned int c = 0; c < eMat.cols; c++) {
 			cout << eMat.matrixA[r][c] << ", " << flush;
 		}
 		cout << endl;
 	}
-	cout << endl;*/
+	cout << endl;
 
 	double detbMat = bMat.determinant(bMat.rows);
 	cout << detbMat << endl;

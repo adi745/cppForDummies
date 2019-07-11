@@ -32,13 +32,16 @@ Matrix Matrix::transpose() {
 	return matB;
 }
 
-/*Matrix Matrix::adjoint() {
+/*
+Matrix Matrix::adjoint() {
 	Matrix res = Matrix(this->rows, this->cols);
 	Matrix coeff = Matrix(this->rows-1, this->cols-1); // i need to put the terms inside of that function and compute det of it
-	for (unsigned int r = this->rows; r > 0; r--) {
-		for (unsigned int c = this->cols; c > 0; c--) {
+	double det;
+	for (unsigned int r = 0; r < this->rows; r++) {
+		for (unsigned int c = 0; c < this->cols; c++) {
+			for (unsigned int )
 			if ((r + c) % 2 == 0) {
-				res.matrixA[r][c] = this->matrixA[r][c]*this->determinant();
+				res.matrixA[r][c] = this->matrixA[r][c]*
 			} else {
 				res.matrixA[r][c] = -this->matrixA[r][c];
 			}
@@ -46,10 +49,41 @@ Matrix Matrix::transpose() {
 	}
 	res = res.transpose();
 	return res;
-}*/
+}
+*/
 
-double Matrix::determinant(int n) {
-	/*must be a square matrix*/
+// Function to get cofactor of A[p][q] in temp[][]. n is current
+// dimension of A[][]
+Matrix Matrix::getCofactor(unsigned int p, unsigned int q, unsigned int n)
+{
+    int i = 0, j = 0;
+	Matrix res = Matrix(n, n);
+    // Looping for each element of the matrix
+    for (unsigned int row = 0; row < n; row++)
+    {
+        for (unsigned int col = 0; col < n; col++)
+        {
+            //  Copying into temporary matrix only those element
+            //  which are not in given row and column
+            if (row != p && col != q)
+            {
+                res.matrixA[i][j++] = this->matrixA[row][col];
+
+                // Row is filled, so increase row index and
+                // reset col index
+                if (j == n - 1)
+                {
+                    j = 0;
+                    i++;
+                }
+            }
+        }
+    }
+    return res;
+}
+
+/*double Matrix::determinant(int n) {
+	must be a square matrix
 	double det = 0.0;
 	Matrix submatrix(this->rows, this->cols);
 	if (this->rows != this->cols) {
@@ -80,7 +114,34 @@ double Matrix::determinant(int n) {
 		}
 		return det;
 	}
+}*/
+
+double Matrix::determinant(unsigned int n)
+{
+    double D = 0; // Initialize result
+
+    //  Base case : if matrix contains single element
+    if (n == 1)
+        return this->matrixA[0][0];
+
+    Matrix temp = Matrix(n, n); // To store cofactors
+
+    int sign = 1;  // To store sign multiplier
+
+     // Iterate for each element of first row
+    for (int f = 0; f < n; f++)
+    {
+        // Getting Cofactor of A[0][f]
+    	temp = this->getCofactor(0, f, n);
+        D += sign * this->matrixA[0][f] * temp.determinant(n - 1);
+
+        // terms are to be added with alternate sign
+        sign = -sign;
+    }
+
+    return D;
 }
+
 #pragma endregion
 
 #pragma region Math Operations
