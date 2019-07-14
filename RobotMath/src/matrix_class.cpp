@@ -25,21 +25,9 @@ int main() {
 	bMat.matrixA[1][0] = 2;
 	bMat.matrixA[1][2] = 3;
 	bMat.matrixA[1][3] = 4;
-	for (unsigned int r = 0; r < aMat.rows; r++) {
-		for (unsigned int c = 0; c < aMat.cols; c++) {
-			cout << aMat.matrixA[r][c] << ", " << flush;
-		}
-		cout << endl;
-	}
-	cout << endl;
+	Mat::printMat(aMat);
 
-	for (unsigned int r = 0; r < bMat.rows; r++) {
-		for (unsigned int c = 0; c < bMat.cols; c++) {
-			cout << bMat.matrixA[r][c] << ", " << flush;
-		}
-		cout << endl;
-	}
-	cout << endl;
+	Mat::printMat(bMat);
 
 	Matrix cMat = Mat::matrixMul(aMat, bMat);
 
@@ -48,14 +36,7 @@ int main() {
 
 	string s = typeid(dMat).name();
 	cout << s << endl;
-
-	for (unsigned int r = 0; r < dMat.rows; r++) {
-		for (unsigned int c = 0; c < dMat.cols; c++) {
-			cout << dMat.matrixA[r][c] << ", " << flush;
-		}
-		cout << endl;
-	}
-	cout << endl;
+	Mat::printMat(dMat);
 
 	cMat.matrixA[2][2] = 12.5;
 	cMat.matrixA[1][4] = -1.55;
@@ -69,26 +50,25 @@ int main() {
 	}
 	cout << endl;
 	Matrix eMat = bMat.adjoint(4);
-	for (unsigned int r = 0; r < eMat.rows; r++) {
-		for (unsigned int c = 0; c < eMat.cols; c++) {
-			cout << eMat.matrixA[r][c] << ", " << flush;
-		}
-		cout << endl;
-	}
-	cout << endl;
+	Mat::printMat(eMat);
 
 	double detbMat = bMat.determinant(bMat.rows);
 	cout << detbMat << endl;
 
 	Matrix fMat = bMat.inverse(4);
 	cout << "fMat: " << endl;
-	for (unsigned int r = 0; r < fMat.rows; r++) {
-		for (unsigned int c = 0; c < fMat.cols; c++) {
-			cout << fMat.matrixA[r][c] << ", " << flush;
-		}
-		cout << endl;
-	}
-	cout << endl;
+	Mat::printMat(fMat);
 
+	trans[0] = 0;
+	trans[1] = 0;
+	DCM gMat = DCM(n, 0, trans);
+	gMat.matrixA[0][0] = 2.0; gMat.matrixA[1][1] = 3.0;
+	cout << "gMat: " << endl;
+	Mat::printMat(gMat);
+	cout << "Val:" << endl;
+	Matrix Val = Mat::matrixEigenVal(gMat);
+	Mat::printMat(Val);
+	Matrix Vec = Mat::matrixEigenVec(gMat);
+	Mat::printMat(Vec);
 	return 0;
 }

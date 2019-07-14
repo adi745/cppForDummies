@@ -5,6 +5,7 @@
  *      Author: adi
  */
 #include "matMath.h"
+#include "jacobi_eigenvalue.h"
 
 namespace RobotMath {
 #pragma region General Matrix
@@ -63,102 +64,95 @@ Matrix Matrix::adjoint(unsigned int n) {
 
 // Function to get cofactor of A[p][q] in temp[][]. n is current
 // dimension of A[][]
-Matrix Matrix::getCofactor(unsigned int p, unsigned int q, unsigned int n)
-{
-    unsigned int i = 0, j = 0;
+Matrix Matrix::getCofactor(unsigned int p, unsigned int q, unsigned int n) {
+	unsigned int i = 0, j = 0;
 	Matrix res = Matrix(n, n);
-    // Looping for each element of the matrix
-    for (unsigned int row = 0; row < n; row++)
-    {
-        for (unsigned int col = 0; col < n; col++)
-        {
-            //  Copying into temporary matrix only those element
-            //  which are not in given row and column
-            if (row != p && col != q)
-            {
-                res.matrixA[i][j++] = this->matrixA[row][col];
+	// Looping for each element of the matrix
+	for (unsigned int row = 0; row < n; row++) {
+		for (unsigned int col = 0; col < n; col++) {
+			//  Copying into temporary matrix only those element
+			//  which are not in given row and column
+			if (row != p && col != q) {
+				res.matrixA[i][j++] = this->matrixA[row][col];
 
-                // Row is filled, so increase row index and
-                // reset col index
-                if (j == n - 1)
-                {
-                    j = 0;
-                    i++;
-                }
-            }
-        }
-    }
-    return res;
+				// Row is filled, so increase row index and
+				// reset col index
+				if (j == n - 1) {
+					j = 0;
+					i++;
+				}
+			}
+		}
+	}
+	return res;
 }
 
 /*double Matrix::determinant(int n) {
-	must be a square matrix
-	double det = 0.0;
-	Matrix submatrix(this->rows, this->cols);
-	if (this->rows != this->cols) {
-		return det; //not a square matrix
-	} else {
-		// square matrix
-		if (n == 2) {
-			det = this->matrixA[0][0] * this->matrixA[1][1]
-					- this->matrixA[1][0] * this->matrixA[0][1];
-			return det;
-		} else {
-			for (int x = 0; x < n; x++) {
-				int subi = 0;
-				for (int i = 1; i < n; i++) {
-					int subj = 0;
-					for (int j = 0; j < n; j++) {
-						if (j == x)
-							continue;
-						submatrix.matrixA[subi][subj] = this->matrixA[i][j];
-						subj++;
-					}
-					subi++;
-				}
-				det = det
-						+ (pow(-1, x) * this->matrixA[0][x]
-								* submatrix.determinant(n - 1));
-			}
-		}
-		return det;
+ must be a square matrix
+ double det = 0.0;
+ Matrix submatrix(this->rows, this->cols);
+ if (this->rows != this->cols) {
+ return det; //not a square matrix
+ } else {
+ // square matrix
+ if (n == 2) {
+ det = this->matrixA[0][0] * this->matrixA[1][1]
+ - this->matrixA[1][0] * this->matrixA[0][1];
+ return det;
+ } else {
+ for (int x = 0; x < n; x++) {
+ int subi = 0;
+ for (int i = 1; i < n; i++) {
+ int subj = 0;
+ for (int j = 0; j < n; j++) {
+ if (j == x)
+ continue;
+ submatrix.matrixA[subi][subj] = this->matrixA[i][j];
+ subj++;
+ }
+ subi++;
+ }
+ det = det
+ + (pow(-1, x) * this->matrixA[0][x]
+ * submatrix.determinant(n - 1));
+ }
+ }
+ return det;
+ }
+ }*/
+
+double Matrix::determinant(unsigned int n) {
+	double D = 0; // Initialize result
+
+	//  Base case : if matrix contains single element
+	if (n == 1)
+		return this->matrixA[0][0];
+
+	Matrix temp = Matrix(n, n); // To store cofactors
+
+	int sign = 1;  // To store sign multiplier
+
+	// Iterate for each element of first row
+	for (unsigned int f = 0; f < n; f++) {
+		// Getting Cofactor of A[0][f]
+		temp = this->getCofactor(0, f, n);
+		D += sign * this->matrixA[0][f] * temp.determinant(n - 1);
+
+		// terms are to be added with alternate sign
+		sign = -sign;
 	}
-}*/
 
-double Matrix::determinant(unsigned int n)
-{
-    double D = 0; // Initialize result
-
-    //  Base case : if matrix contains single element
-    if (n == 1)
-        return this->matrixA[0][0];
-
-    Matrix temp = Matrix(n, n); // To store cofactors
-
-    int sign = 1;  // To store sign multiplier
-
-     // Iterate for each element of first row
-    for (unsigned int f = 0; f < n; f++)
-    {
-        // Getting Cofactor of A[0][f]
-    	temp = this->getCofactor(0, f, n);
-        D += sign * this->matrixA[0][f] * temp.determinant(n - 1);
-
-        // terms are to be added with alternate sign
-        sign = -sign;
-    }
-
-    return D;
+	return D;
 }
 
 // Function to calculate and store inverse, returns false if
 // matrix is singular
 Matrix Matrix::inverse(unsigned int n) //int A[N][N], float inverse[N][N]
-{
+		{
 	Matrix res = Matrix(n, n);
 	// Find determinant of A[][]
 	double det = this->determinant(n);
-	if (det == 0) {
+	if (abs(det) <= THRESHOLD) {
 		cout << "Singular matrix, can't find its inverse";
 	} else {
 		// Find adjoint
@@ -194,11 +188,10 @@ Matrix Mat::matrixAdd(Matrix matA, Matrix matB) {
 				res.matrixA[r][c] = matA.matrixA[r][c] + matB.matrixA[r][c];
 			}
 		}
-		return res;
 	} else {
 		cout << "operation couldn't be done" << endl;
-		return res;
 	}
+	return res;
 }
 
 Matrix Mat::matrixSub(Matrix matA, Matrix matB) {
@@ -211,11 +204,10 @@ Matrix Mat::matrixSub(Matrix matA, Matrix matB) {
 				res.matrixA[r][c] = matA.matrixA[r][c] - matB.matrixA[r][c];
 			}
 		}
-		return res;
 	} else {
 		cout << "operation couldn't be done" << endl;
-		return res;
 	}
+	return res;
 }
 
 Matrix Mat::matrixMul(Matrix matA, Matrix matB) {
@@ -232,11 +224,70 @@ Matrix Mat::matrixMul(Matrix matA, Matrix matB) {
 				}
 			}
 		}
-		return res;
 	} else {
 		cout << "operation couldn't be done" << endl;
-		return res;
 	}
+	return res;
+}
+
+Matrix Mat::matrixEigenVal(Matrix matA) {
+	int n = matA.rows;
+	Matrix res = Matrix(n, 1);
+	double a[n * n];
+	double d[n];
+	double v[n * n];
+	int it_max = 100;
+	int it_num;
+	int rot_num;
+	for (unsigned int r = 0; r < matA.rows; r++) {
+		for (unsigned int c = 0; c < matA.cols; c++) {
+			a[c + r * n] = matA.matrixA[r][c];
+/*			cout << a[c + r * n] << flush;*/
+		}
+/*		cout << endl;*/
+	}
+	jacobi_eigenvalue(n, a, it_max, v, d, it_num, rot_num);
+	for (unsigned int r = 0; r < res.rows; r++) {
+/*		cout << d[r] << endl;*/
+		res.matrixA[r][0] = d[r];
+	}
+/*	for (unsigned int r = 0; r < res.rows; r++) {
+		cout << res.matrixA[r][0];
+	}*/
+	return res;
+}
+
+Matrix Mat::matrixEigenVec(Matrix matA) {
+	int n = matA.rows;
+	Matrix res = Matrix(n, n);
+	double a[n * n];
+	double d[n];
+	double v[n * n];
+	int it_max = 100;
+	int it_num;
+	int rot_num;
+	for (unsigned int r = 0; r < matA.rows; r++) {
+		for (unsigned int c = 0; c < matA.cols; c++) {
+			a[c + r * n] = matA.matrixA[r][c];
+		}
+	}
+	jacobi_eigenvalue(n, a, it_max, v, d, it_num, rot_num);
+	for (unsigned int r = 0; r < res.rows; r++) {
+		for (unsigned int c = 0; c < res.cols; c++){
+			res.matrixA[r][c] = v[c + r * n];
+		}
+	}
+	return res;
+}
+
+void Mat::printMat(Matrix matA) {
+	for (unsigned int r = 0; r < matA.rows; r++) {
+		for (unsigned int c = 0; c < matA.cols; c++) {
+			cout << matA.matrixA[r][c] << ", " << flush;
+		}
+		cout << endl;
+	}
+	cout << endl;
 }
 
 void Mat::freeMemory(double **pMat) {
@@ -278,6 +329,7 @@ DCM::DCM(double* n, double theta, double* trans_vec) :
 }
 DCM::DCM(Matrix& matA) :
 		Matrix(4, 4) {
+	this->matrixA = matA.matrixA;
 }
 
 DCM::~DCM() {
