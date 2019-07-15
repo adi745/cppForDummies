@@ -65,10 +65,11 @@ int main() {
 	gMat.matrixA[0][0] = 2.0; gMat.matrixA[1][1] = 3.0;
 	cout << "gMat: " << endl;
 	Mat::printMat(gMat);
+	Matrix eigVal(4,1), eigVec(4,4);
+	tie(eigVal, eigVec) = Mat::matrixEigen(gMat); //outputing two objects at once
 	cout << "Val:" << endl;
-	Matrix Val = Mat::matrixEigenVal(gMat);
-	Mat::printMat(Val);
-	Matrix Vec = Mat::matrixEigenVec(gMat);
-	Mat::printMat(Vec);
+	Mat::printMat(eigVal);
+	cout << "Vec:" << endl;
+	Mat::printMat(eigVec);
 	return 0;
 }
