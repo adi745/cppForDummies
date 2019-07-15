@@ -47,8 +47,7 @@ namespace RobotMath {
 		static Matrix matrixMul(Matrix matA, Matrix matB);
 		//static Matrix matrixInv(Matrix matA, unsigned int size); //size is limited to 2-4
 		static bool checkOperationValid(Matrix matA, Matrix matB);
-		static Matrix matrixEigenVal(Matrix matA);
-		static Matrix matrixEigenVec(Matrix matA);
+		static tuple<Matrix, Matrix> matrixEigen(Matrix matA);
 		static bool matCondition;
 		static void freeMemory(double **pMat);
 		static void printMat(Matrix matA);
