@@ -7,6 +7,10 @@
 #include "matMath.h"
 #include "jacobi_eigenvalue.h"
 
+#ifndef M_PI
+#define M_PI 3.141592
+#endif
+
 namespace RobotMath {
 #pragma region General Matrix
 Matrix::Matrix(unsigned int myrows, unsigned int mycols) {
@@ -230,54 +234,34 @@ Matrix Mat::matrixMul(Matrix matA, Matrix matB) {
 	return res;
 }
 
-Matrix Mat::matrixEigenVal(Matrix matA) {
+tuple<Matrix, Matrix> Mat::matrixEigen(Matrix matA) {
 	int n = matA.rows;
-	Matrix res = Matrix(n, 1);
-	double a[n * n];
-	double d[n];
-	double v[n * n];
+	Matrix eigVal = Matrix(n, 1);
+	Matrix eigVec = Matrix(n, n);
+	double *a = new double[n * n];
+	double *d = new double[n];
+	double *v = new double[n * n];
 	int it_max = 100;
 	int it_num;
 	int rot_num;
 	for (unsigned int r = 0; r < matA.rows; r++) {
 		for (unsigned int c = 0; c < matA.cols; c++) {
 			a[c + r * n] = matA.matrixA[r][c];
-/*			cout << a[c + r * n] << flush;*/
+			/*			cout << a[c + r * n] << flush;*/
 		}
-/*		cout << endl;*/
+		/*		cout << endl;*/
 	}
 	jacobi_eigenvalue(n, a, it_max, v, d, it_num, rot_num);
-	for (unsigned int r = 0; r < res.rows; r++) {
-/*		cout << d[r] << endl;*/
-		res.matrixA[r][0] = d[r];
+	for (unsigned int r = 0; r < eigVal.rows; r++) {
+		/*		cout << d[r] << endl;*/
+		eigVal.matrixA[r][0] = d[r];
 	}
-/*	for (unsigned int r = 0; r < res.rows; r++) {
-		cout << res.matrixA[r][0];
-	}*/
-	return res;
-}
-
-Matrix Mat::matrixEigenVec(Matrix matA) {
-	int n = matA.rows;
-	Matrix res = Matrix(n, n);
-	double a[n * n];
-	double d[n];
-	double v[n * n];
-	int it_max = 100;
-	int it_num;
-	int rot_num;
-	for (unsigned int r = 0; r < matA.rows; r++) {
-		for (unsigned int c = 0; c < matA.cols; c++) {
-			a[c + r * n] = matA.matrixA[r][c];
+	for (unsigned int r = 0; r < eigVec.rows; r++) {
+		for (unsigned int c = 0; c < eigVec.cols; c++) {
+			eigVec.matrixA[r][c] = v[c + r * n];
 		}
 	}
-	jacobi_eigenvalue(n, a, it_max, v, d, it_num, rot_num);
-	for (unsigned int r = 0; r < res.rows; r++) {
-		for (unsigned int c = 0; c < res.cols; c++){
-			res.matrixA[r][c] = v[c + r * n];
-		}
-	}
-	return res;
+	return std::make_tuple(eigVal, eigVec);
 }
 
 void Mat::printMat(Matrix matA) {
